@@ -1,0 +1,592 @@
+# How to make it work with Spacemacs
+# 1. Add the following to .spacemacs file
+# (org :variables
+#      org-enable-github-support t
+#      org-enable-reveal-js-support t)
+# 2. Use M-x org-reveal-export-to-html-and-browse
+
+#+TITLE: SSReflect/Mathcomp
+#+DATE: 04.04.2019
+#+AUTHOR: Anton Trunov
+#+EMAIL: https://github.com/anton-trunov
+#+OPTIONS: num:nil toc:nil timestamp:nil
+#+OPTIONS: reveal_title_slide:"<h1>%t</h1><h2>%a</h2><h3>FProg&nbsp;meetup</h3><h4>%d</h4>"
+# #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.6.0/
+#+REVEAL_TRANS: none
+# none | fade | slide | convex | concave | zoom
+#+REVEAL_THEME: beige
+# default | beige | sky | night | serif | simple | moon
+# /League/Sky/Beige/Simple/Serif/Blood/Night/Moon/Solarized
+#+REVEAL_EXTRA_CSS: ./modifications.css
+# #+REVEAL_TITLE_SLIDE_BACKGROUND: ./images/sapsan.jpg
+# #+REVEAL_TITLE_SLIDE_BACKGROUND_SIZE: 800px
+# #+REVEAL_PLUGINS: (highlight)
+# #+OPTIONS: reveal_background: 
+
+
+* What is Coq ?
+Coq is a formal proof management system.
+It provides
+- a language to write mathematical definitions,
+- executable algorithms,
+- theorems (specifications),
+- environment for interactive development of machine-checked proofs.
+- based on the Calculus of Inductive Constructions
+* Broader context
+The land of formal methods includes
+- Specification languages
+- Interactive theorem provers
+- SAT/SMT solvers
+- Model checking
+- Program Logics
+- ...
+* Related systems
+- Lean prover (similar to Coq)
+- Agda (predicative)
+- Idris (similar to Agda)
+- F* (used to verify crypto code in Firefox)
+- Isabelle/HOL (simple type theory, seL4)
+* What do people use Coq for?
+Formalization of mathematics:
+- Four color theorem,
+- Feit-Thompson theorem
+- Homotopy type theory.
+Education: it's a proof _assistant_.
+* 
+:PROPERTIES:
+:reveal_background: images/deepspec.png
+:reveal_background_size: 1200px
+:reveal_background_trans: slide
+:END:
+* More examples
+- Coq-generated crypto code in Chrome
+- [[https://github.com/mit-pdos/fscq][FSCQ]]: a file system written and verified in Coq
+- [[https://github.com/mit-pdos/armada][Armada]]: verifying concurrent storage systems
+- Cryptocurrencies (e.g. Tezos, Zilliqa)
+* 
+:PROPERTIES:
+:reveal_background: images/scilla-coq.jpg
+:reveal_background_size: 1200px
+:reveal_background_trans: slide
+:END:
+* Coq, its ecosystem and community
+- open source (https://github.com/coq/coq)
+- written in OCaml
+- has a standard library (and several overlay stdlibs)
+- lots of packages available on opam & Nix
+- community-driven projects: https://github.com/coq-community
+* Coq repo stats (LoC)
+|--------------+-------+--------|
+| Language     | files |   code |
+|--------------+-------+--------|
+| OCaml        |   949 | 203230 |
+| Coq          |  1970 | 196057 |
+| TeX          |    26 |   5270 |
+| Markdown     |    22 |   3362 |
+| Bourne Shell |   107 |   2839 |
+| ...          |       |        |
+* Mathcomp stats (LoC)
+|----------------+-------+--------|
+| Language       | files |   code |
+|----------------+-------+--------|
+| HTML        :) |   377 | 299260 |
+| Coq            |    92 |  83726 |
+| JavaScript     |    13 |  34363 |
+| CSS            |     6 |   1199 |
+| ...            |       |        |
+* 
+:PROPERTIES:
+:reveal_background: images/fscq-bug.png
+:reveal_background_size: 1000px
+:reveal_background_trans: slide
+:END:
+* Proofs _and_ Tests
+- =@vj_chidambaram=: Even verified file systems have unverified parts :)
+- FSCQ had a buggy optimization in the Haskell-C bindings
+- CompCert is known to also have bugs in the non-verified parts
+- QuickChick shows an amazing applicability of randomized testing in the context of theorem proving
+- Real-world verification projects have assumptions that might not be true
+* FSCQ stats (LoC)
+|----------+-------+-------|
+| Language | files |  code |
+|----------+-------+-------|
+| Coq      |    98 | 81049 |
+| C        |    36 |  4132 |
+| Haskell  |     8 |  1091 |
+| OCaml    |    10 |   687 |
+| Python   |     9 |   643 |
+| ...      |       |       |
+* CompCert C Compiler stats (LoC)
+|--------------+-------+--------|
+| Language     | files |   code |
+|--------------+-------+--------|
+| Coq          |   223 | 146226 |
+| C            |   223 |  65053 |
+| OCaml        |   147 |  28381 |
+| C/C++ Header |    86 |   7834 |
+| Assembly     |    59 |   1542 |
+| ...          |       |        |
+* What is Coq based on?
+_*Calculus of Inductive Constructions*_
+
+Just some keywords:
+- Dependent types (expressivity!)
+- Curry-Howard Correspondence
+* Curry-Howard Correspondence
+- Main idea:
+  + propositions are special case of types
+  + a proof is a program of the required type
+- One language to rule 'em all
+- Proof checking = Type checking!
+- Proving = Programming
+* Proving _is_ programming
+- High confendence in your code
+- It is as strong as strong your specs are (trust!)
+- It can be extremely hard to come up with a spec (think of browsers)
+- IMHO: the best kind of programming
+* Coq as Programming Language
+- Functional
+- Dependently-typed
+- *Total* language
+- Supports extraction
+* Extraction
+- OCaml
+- Haskell
+- Scheme
+- Scala via https://github.com/JBakouny/Scallina
+- C via https://github.com/akr/codegen
+- C++ via https://github.com/mit-pdos/mcqc
+* 
+:PROPERTIES:
+:reveal_background: images/xmonad.png
+:reveal_background_size: 1200px
+:reveal_background_trans: slide
+:END:
+* Extraction: xmonad
+- [[http://www.staff.science.uu.nl/~swier004/publications/2012-haskell.pdf][xmonad in Coq (Experience Report)]] by Wouter Swierstra (2012)
+- it's possible!
+- the report shows there is lots of room for improvement
+* Extraction: toychain
+[[https://github.com/certichain/toychain][toychain]] - A Coq implementation of a minimalistic blockchain-based consensus protocol
+* Embedding
+- [[https://github.com/antalsz/hs-to-coq][hs-to-coq]] - Haskell to Coq converter
+- [[https://github.com/clarus/coq-of-ocaml][coq-of-ocaml]] - OCaml to Coq converter (unmaintained)
+- [[https://github.com/tchajed/goose][goose]] - Go to Coq conversion
+- clightgen (VST)
+- [[https://github.com/mit-plv/fiat-crypto][fiat-crypto]] - Synthesizing Correct-by-Construction Code for Cryptographic Primitives
+* [[https://github.com/antalsz/hs-to-coq][hs-to-coq]] - Haskell to Coq converter
+- part of the CoreSpec component of the DeepSpec project
+- has been applied to verification Haskell’s =containers= library against specs derived from
+  + type class laws;
+  + library’s test suite;
+  + interfaces from Coq’s stdlib.
+- challenge: partiality
+* SSReflect
+- SSReflect = Small Scale Reflection
+- a language and a methodology for writing Coq proofs
+- Four Colour Theorem, Odd Order Theorem, Mathcomp library
+* SSReflect/Mathcomp heavily exploits
+- Decidability and computation
+- Special type of reflection/reification
+- Notations
+- Coercions
+- Canonical Structures
+* Decidability and computation
+#+BEGIN_SRC coq
+  Inductive le : nat -> nat -> Prop :=
+  | Le0 : forall n, le 0 n
+  | LeSS : forall {n m}, le n m -> le (S n) (S m).
+
+  Definition four_le_five : le 4 5 :=
+    LeSS (LeSS (LeSS (LeSS (Le0 1)))).
+#+END_SRC
+* Decidability and computation
+#+BEGIN_SRC coq
+  Fixpoint leb (n m : nat) : bool :=
+    match n, m with
+    | O, _ => true
+    | _, O => false
+    | S n', S m' => le n' m'
+    end.
+
+  Coercion is_true b := b = true.
+
+  Definition four_le_five : leb 4 5 :=
+    eq_refl.
+#+END_SRC
+* Decidability and computation
+#+BEGIN_SRC coq
+  Fixpoint leb (n m : nat) : bool :=
+    match n, m with
+    | O, _ => true
+    | _, O => false
+    | S n', S m' => le n' m'
+    end.
+
+  Coercion is_true b := b = true.
+
+  Definition four_le_five : is_true (leb 4 5) :=
+    eq_refl.
+#+END_SRC
+* Large Scale Reflection
+- reflect a piece of language into a datatype
+- process
+- interpret back into language (reify)
+- e.g. this is how the ring tactic works
+* Small Scale Reflection
+- limited in scope
+- based on an inductive reflection predicate
+- needs special support from the proof language
+* Small Scale Reflection
+#+BEGIN_SRC coq
+  Inductive reflect (P : Prop) : bool -> Set :=
+    | ReflectT : P -> reflect P true
+    | ReflectF : ~ P -> reflect P false
+#+END_SRC
+- reasoning by excluded middle
+- switch between le and leb
+- a tool to deal with complex decidable properties using rewriting lemmas
+* 
+:PROPERTIES:
+:reveal_background: images/small-scale-reflection.png
+:reveal_background_size: 1000px
+:reveal_background_trans: slide
+:END:
+* SSReflect idiom: Trichotomy
+#+BEGIN_SRC coq
+Variant cmp_nat m n :
+  bool -> bool -> bool -> bool -> bool -> bool -> Set :=
+| CompareNatLt of m < n :
+  cmp_nat m n true false true false false false
+| CompareNatGt of m > n :
+  cmp_nat m n false true false true false false
+| CompareNatEq of m = n :
+  cmp_nat m n true true false false true true.
+
+Lemma ltngtP m n :
+  cmp_nat m n (m <= n) (n <= m) (m < n)
+              (n < m) (n == m) (m == n).
+#+END_SRC
+* How ltngtP works: demo
+* Coercions and Canonical Structures
+- Motivation: generic comparision operation
+- x == y
+#+BEGIN_SRC coq
+  eq_op : (T : Type) -> (x y : T) -> bool
+
+  Notation "x == y" := (eq_op _ x y).
+#+END_SRC
+- =eq_op= is not possible to implement in general
+* Solution: eqType structure
+#+BEGIN_SRC coq
+  Structure eqType := Pack {
+    sort : Type;
+    eq_op : sort -> sort -> bool;
+    spec : forall x y, eq_op x y = true <-> x = y
+  }.
+
+
+
+
+
+#+END_SRC
+* Solution: eqType structure
+#+BEGIN_SRC coq
+  Structure eqType := Pack {
+    sort : Type;
+    eq_op : sort -> sort -> bool;
+    spec : forall x y, eq_op x y = true <-> x = y
+  }.
+
+  Coercion sort : eqType >-> Sortclass.
+
+
+
+#+END_SRC
+* Solution: eqType structure
+#+BEGIN_SRC coq
+  Structure eqType := Pack {
+    sort : Type;
+    eq_op : sort -> sort -> bool;
+    spec : forall x y, eq_op x y = true <-> x = y
+  }.
+
+  Coercion sort : eqType >-> Sortclass.
+
+  Lemma eq_sym (T : eqType) (x y : T) : x == y -> y == x.
+#+END_SRC
+* Solution: eqType structure
+#+BEGIN_SRC coq
+  Structure eqType := Pack {
+    sort : Type;
+    eq_op : sort -> sort -> bool;
+    spec : forall x y, eq_op x y = true <-> x = y
+  }.
+#+END_SRC
+#+BEGIN_SRC coq
+  eq_op : (T : eqType) -> (x y : sort T) -> bool
+#+END_SRC
+* Example
+initially we have
+#+BEGIN_SRC coq
+  1 == 2
+#+END_SRC
+* Example
+unfold notation
+#+BEGIN_SRC coq
+  eq_op _ 1 2
+#+END_SRC
+* Example
+add types and names
+#+BEGIN_SRC coq
+  eq_op (?s : eqType) (1 : sort ?s) (2 : sort ?s)
+#+END_SRC
+* Example
+add types and names
+#+BEGIN_SRC coq
+  eq_op (?s : eqType) (1 : sort ?s) (2 : sort ?s)
+#+END_SRC
+* Example
+add types and names
+#+BEGIN_SRC coq
+  eq_op (?s : eqType) (1 : sort ?s) (2 : sort ?s)
+  eq_op (?s : eqType) (1 : nat)     (2 : nat)
+#+END_SRC
+* Example
+so we need to be able to solve equations like
+#+BEGIN_SRC coq
+  sort (?s : eqType) = nat
+#+END_SRC
+- type inference is undecidable in this case
+- so we need hints
+* Canonical Structures to the rescue
+#+BEGIN_SRC coq
+Canonical nat_eqType := Pack nat eqn proof.
+Print Canonical Projections.
+...
+nat <- sort ( nat_eqType )
+...
+#+END_SRC
+* Example
+#+BEGIN_SRC coq
+
+
+  eq_op (?s : eqType) (1 : sort ?s) (2 : sort ?s)
+  eq_op (?s : eqType) (1 : nat)     (2 : nat)
+
+
+
+#+END_SRC
+* Example
+#+BEGIN_SRC coq
+  nat <- sort ( nat_eqType )
+    
+  eq_op (?s : eqType) (1 : sort ?s) (2 : sort ?s)
+                           |             |
+                           v             v
+  eq_op (?s : eqType) (1 : nat)     (2 : nat)
+#+END_SRC
+* Example
+#+BEGIN_SRC coq
+  nat <- sort ( nat_eqType )
+    
+  eq_op (nat_eqType : eqType)
+        (1 : sort nat_eqType)
+        (2 : sort nat_eqType)
+#+END_SRC
+* Equality for product type
+#+BEGIN_SRC coq
+Definition pair_eq (A B : eqType)
+                   (u v : A * B) :=
+  (u.1 == v.1) && (u.2 == v.2).
+
+
+
+
+
+
+
+
+#+END_SRC
+* Equality for product type
+#+BEGIN_SRC coq
+Definition pair_eq (A B : eqType)
+                   (u v : A * B) :=
+  (u.1 == v.1) && (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (A * B) pair_eq proof.
+
+
+
+
+
+#+END_SRC
+* Equality for product type
+#+BEGIN_SRC coq
+Definition pair_eq (A B : eqType)
+                   (u v : sort A * sort B) :=
+  (u.1 == v.1) && (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (sort A * sort B) pair_eq proof.
+
+
+
+
+
+#+END_SRC
+* Equality for product type
+#+BEGIN_SRC coq
+Definition pair_eq (A B : eqType)
+                   (u v : sort A * sort B) :=
+  (u.1 == v.1) && (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (sort A * sort B) pair_eq proof.
+
+Print Canonical Projections.
+...
+prod <- sort ( prod_eqType ) 
+...
+#+END_SRC
+* Example
+#+BEGIN_SRC coq
+Compute (1, true) == (1, true).
+
+#+END_SRC
+* Example
+#+BEGIN_SRC coq
+Compute (1, true) == (1, true).
+true
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+(1, true) == (1, true)
+#+END_SRC
+* How does it work?
+desugars into
+#+BEGIN_SRC coq
+eq_op _ (1, true) (1, true) 
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+
+
+
+
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ nat * bool
+
+
+
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+
+
+
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+prod <- sort ( prod_eqType ) 
+
+
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+prod <- sort ( prod_eqType ) 
+sort (prod_eqType ?A ?B) ≡ prod nat bool
+
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+prod <- sort ( prod_eqType ) 
+sort (prod_eqType ?A ?B) ≡ prod nat bool
+(sort ?A) * (sort ?B) ≡ prod nat bool
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+prod <- sort ( prod_eqType ) 
+sort (prod_eqType ?A ?B) ≡ prod nat bool
+prod (sort ?A) (sort ?B) ≡ prod nat bool
+
+#+END_SRC
+* How does it work?
+#+BEGIN_SRC coq
+eq_op : (?T : eqType) -> (x y : sort T) -> bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort ?T ≡ prod nat bool
+prod <- sort ( prod_eqType ) 
+sort (prod_eqType ?A ?B) ≡ prod nat bool
+prod (sort ?A) (sort ?B) ≡ prod nat bool
+(sort ?A) = nat and (sort ?B) = bool
+#+END_SRC
+* Canonical Structures vs Typeclasses
+- Canonical Structures work at the unification level (predictable)
+- Typeclasses mechanism uses =eauto=-like proof search
+- Canonical structures are _not_ tied to types, those can be keyed on terms!
+- CS can be used to implement overloading, implicit program (and proof) construction
+* Keying on terms
+Mathcomp's =bigop= module has the following:
+#+BEGIN_SRC coq
+Canonical addn_monoid := Law addnA add0n addn0.
+Canonical muln_monoid := Law mulnA mul1n muln1.
+Canonical maxn_monoid := Law maxnA max0n maxn0.
+#+END_SRC
+* Keying on terms: demo
+* Further reading
+- SSReflect chapter of Coq Reference Manual
+- Programs and Proofs - I. Sergey
+- Mathemacical Components book - E. Tassi, A. Mahboubi
+- Packaging Mathematical Structures - G. Gonthier et al.(2009)
+- Canonical Structures for the Working Coq User - A. Mahboubi, E. Tassi(2013)
+* Further reading
+- Generic Proof Tools and Finite Group Theory - F. Garillot(2011)
+- A Machine-Checked Proof of the Odd Order Theorem - G. Gonthier et al.(2013)
+- How to Make Ad Hoc Proof Automation Less Ad Hoc - A. Nanevski et al.(2013)
+* Questions?
+* Thank you!

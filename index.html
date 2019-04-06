@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>SSReflect/Mathcomp</title>
+<meta name="author" content="(Anton Trunov)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/css/theme/beige.css" id="theme"/>
+
+<link rel="stylesheet" href="./modifications.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1>SSReflect/Mathcomp</h1><h2>Anton Trunov</h2><h3>FProg&nbsp;meetup</h3><h4>04.04.2019</h4>
+</section>
+
+
+<section>
+<section id="slide-orgb038583">
+<h2 id="orgb038583">What is Coq ?</h2>
+<p>
+Coq is a formal proof management system.
+It provides
+</p>
+<ul>
+<li>a language to write mathematical definitions,</li>
+<li>executable algorithms,</li>
+<li>theorems (specifications),</li>
+<li>environment for interactive development of machine-checked proofs.</li>
+<li>based on the Calculus of Inductive Constructions</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb4d66da">
+<h2 id="orgb4d66da">Broader context</h2>
+<p>
+The land of formal methods includes
+</p>
+<ul>
+<li>Specification languages</li>
+<li>Interactive theorem provers</li>
+<li>SAT/SMT solvers</li>
+<li>Model checking</li>
+<li>Program Logics</li>
+<li>&#x2026;</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org3813677">
+<h2 id="org3813677">Related systems</h2>
+<ul>
+<li>Lean prover (similar to Coq)</li>
+<li>Agda (predicative)</li>
+<li>Idris (similar to Agda)</li>
+<li>F* (used to verify crypto code in Firefox)</li>
+<li>Isabelle/HOL (simple type theory, seL4)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org2eaae94">
+<h2 id="org2eaae94">What do people use Coq for?</h2>
+<p>
+Formalization of mathematics:
+</p>
+<ul>
+<li>Four color theorem,</li>
+<li>Feit-Thompson theorem</li>
+<li>Homotopy type theory.</li>
+
+</ul>
+<p>
+Education: it's a proof <span class="underline">assistant</span>.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgd6d4c69" data-background="images/deepspec.png" data-background-size="1200px" data-background-transition="slide">
+<h2 id="orgd6d4c69"></h2>
+</section>
+</section>
+<section>
+<section id="slide-org5d032e2">
+<h2 id="org5d032e2">More examples</h2>
+<ul>
+<li>Coq-generated crypto code in Chrome</li>
+<li><a href="https://github.com/mit-pdos/fscq">FSCQ</a>: a file system written and verified in Coq</li>
+<li><a href="https://github.com/mit-pdos/armada">Armada</a>: verifying concurrent storage systems</li>
+<li>Cryptocurrencies (e.g. Tezos, Zilliqa)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb731de9" data-background="images/scilla-coq.jpg" data-background-size="1200px" data-background-transition="slide">
+<h2 id="orgb731de9"></h2>
+</section>
+</section>
+<section>
+<section id="slide-orgd4c2428">
+<h2 id="orgd4c2428">Coq, its ecosystem and community</h2>
+<ul>
+<li>open source (<a href="https://github.com/coq/coq">https://github.com/coq/coq</a>)</li>
+<li>written in OCaml</li>
+<li>has a standard library (and several overlay stdlibs)</li>
+<li>lots of packages available on opam &amp; Nix</li>
+<li>community-driven projects: <a href="https://github.com/coq-community">https://github.com/coq-community</a></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org325f7af">
+<h2 id="org325f7af">Coq repo stats (LoC)</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Language</th>
+<th scope="col" class="org-right">files</th>
+<th scope="col" class="org-right">code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">OCaml</td>
+<td class="org-right">949</td>
+<td class="org-right">203230</td>
+</tr>
+
+<tr>
+<td class="org-left">Coq</td>
+<td class="org-right">1970</td>
+<td class="org-right">196057</td>
+</tr>
+
+<tr>
+<td class="org-left">TeX</td>
+<td class="org-right">26</td>
+<td class="org-right">5270</td>
+</tr>
+
+<tr>
+<td class="org-left">Markdown</td>
+<td class="org-right">22</td>
+<td class="org-right">3362</td>
+</tr>
+
+<tr>
+<td class="org-left">Bourne Shell</td>
+<td class="org-right">107</td>
+<td class="org-right">2839</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-orgf99233c">
+<h2 id="orgf99233c">Mathcomp stats (LoC)</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Language</th>
+<th scope="col" class="org-right">files</th>
+<th scope="col" class="org-right">code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">HTML        :)</td>
+<td class="org-right">377</td>
+<td class="org-right">299260</td>
+</tr>
+
+<tr>
+<td class="org-left">Coq</td>
+<td class="org-right">92</td>
+<td class="org-right">83726</td>
+</tr>
+
+<tr>
+<td class="org-left">JavaScript</td>
+<td class="org-right">13</td>
+<td class="org-right">34363</td>
+</tr>
+
+<tr>
+<td class="org-left">CSS</td>
+<td class="org-right">6</td>
+<td class="org-right">1199</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org2b5def2" data-background="images/fscq-bug.png" data-background-size="1000px" data-background-transition="slide">
+<h2 id="org2b5def2"></h2>
+</section>
+</section>
+<section>
+<section id="slide-orgefd32e4">
+<h2 id="orgefd32e4">Proofs <span class="underline">and</span> Tests</h2>
+<ul>
+<li><code>@vj_chidambaram</code>: Even verified file systems have unverified parts :)</li>
+<li>FSCQ had a buggy optimization in the Haskell-C bindings</li>
+<li>CompCert is known to also have bugs in the non-verified parts</li>
+<li>QuickChick shows an amazing applicability of randomized testing in the context of theorem proving</li>
+<li>Real-world verification projects have assumptions that might not be true</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org6bbd3bf">
+<h2 id="org6bbd3bf">FSCQ stats (LoC)</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Language</th>
+<th scope="col" class="org-right">files</th>
+<th scope="col" class="org-right">code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Coq</td>
+<td class="org-right">98</td>
+<td class="org-right">81049</td>
+</tr>
+
+<tr>
+<td class="org-left">C</td>
+<td class="org-right">36</td>
+<td class="org-right">4132</td>
+</tr>
+
+<tr>
+<td class="org-left">Haskell</td>
+<td class="org-right">8</td>
+<td class="org-right">1091</td>
+</tr>
+
+<tr>
+<td class="org-left">OCaml</td>
+<td class="org-right">10</td>
+<td class="org-right">687</td>
+</tr>
+
+<tr>
+<td class="org-left">Python</td>
+<td class="org-right">9</td>
+<td class="org-right">643</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org17d50ab">
+<h2 id="org17d50ab">CompCert C Compiler stats (LoC)</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Language</th>
+<th scope="col" class="org-right">files</th>
+<th scope="col" class="org-right">code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Coq</td>
+<td class="org-right">223</td>
+<td class="org-right">146226</td>
+</tr>
+
+<tr>
+<td class="org-left">C</td>
+<td class="org-right">223</td>
+<td class="org-right">65053</td>
+</tr>
+
+<tr>
+<td class="org-left">OCaml</td>
+<td class="org-right">147</td>
+<td class="org-right">28381</td>
+</tr>
+
+<tr>
+<td class="org-left">C/C++ Header</td>
+<td class="org-right">86</td>
+<td class="org-right">7834</td>
+</tr>
+
+<tr>
+<td class="org-left">Assembly</td>
+<td class="org-right">59</td>
+<td class="org-right">1542</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org5a92b73">
+<h2 id="org5a92b73">What is Coq based on?</h2>
+<p>
+<span class="underline"><b>Calculus of Inductive Constructions</b></span>
+</p>
+
+<p>
+Just some keywords:
+</p>
+<ul>
+<li>Dependent types (expressivity!)</li>
+<li>Curry-Howard Correspondence</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb490369">
+<h2 id="orgb490369">Curry-Howard Correspondence</h2>
+<ul>
+<li>Main idea:
+<ul>
+<li>propositions are special case of types</li>
+<li>a proof is a program of the required type</li>
+
+</ul></li>
+<li>One language to rule 'em all</li>
+<li>Proof checking = Type checking!</li>
+<li>Proving = Programming</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org781d252">
+<h2 id="org781d252">Proving <span class="underline">is</span> programming</h2>
+<ul>
+<li>High confendence in your code</li>
+<li>It is as strong as strong your specs are (trust!)</li>
+<li>It can be extremely hard to come up with a spec (think of browsers)</li>
+<li>IMHO: the best kind of programming</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgd4677ee">
+<h2 id="orgd4677ee">Coq as Programming Language</h2>
+<ul>
+<li>Functional</li>
+<li>Dependently-typed</li>
+<li><b>Total</b> language</li>
+<li>Supports extraction</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org82dbd94">
+<h2 id="org82dbd94">Extraction</h2>
+<ul>
+<li>OCaml</li>
+<li>Haskell</li>
+<li>Scheme</li>
+<li>Scala via <a href="https://github.com/JBakouny/Scallina">https://github.com/JBakouny/Scallina</a></li>
+<li>C via <a href="https://github.com/akr/codegen">https://github.com/akr/codegen</a></li>
+<li>C++ via <a href="https://github.com/mit-pdos/mcqc">https://github.com/mit-pdos/mcqc</a></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org8cacda5" data-background="images/xmonad.png" data-background-size="1200px" data-background-transition="slide">
+<h2 id="org8cacda5"></h2>
+</section>
+</section>
+<section>
+<section id="slide-orgc0daffd">
+<h2 id="orgc0daffd">Extraction: xmonad</h2>
+<ul>
+<li><a href="http://www.staff.science.uu.nl/~swier004/publications/2012-haskell.pdf">xmonad in Coq (Experience Report)</a> by Wouter Swierstra (2012)</li>
+<li>it's possible!</li>
+<li>the report shows there is lots of room for improvement</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org3ce2eb6">
+<h2 id="org3ce2eb6">Extraction: toychain</h2>
+<p>
+<a href="https://github.com/certichain/toychain">toychain</a> - A Coq implementation of a minimalistic blockchain-based consensus protocol
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orge2d0d3f">
+<h2 id="orge2d0d3f">Embedding</h2>
+<ul>
+<li><a href="https://github.com/antalsz/hs-to-coq">hs-to-coq</a> - Haskell to Coq converter</li>
+<li><a href="https://github.com/clarus/coq-of-ocaml">coq-of-ocaml</a> - OCaml to Coq converter (unmaintained)</li>
+<li><a href="https://github.com/tchajed/goose">goose</a> - Go to Coq conversion</li>
+<li>clightgen (VST)</li>
+<li><a href="https://github.com/mit-plv/fiat-crypto">fiat-crypto</a> - Synthesizing Correct-by-Construction Code for Cryptographic Primitives</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org3dd0b82">
+<h2 id="org3dd0b82"><a href="https://github.com/antalsz/hs-to-coq">hs-to-coq</a> - Haskell to Coq converter</h2>
+<ul>
+<li>part of the CoreSpec component of the DeepSpec project</li>
+<li>has been applied to verification Haskell’s <code>containers</code> library against specs derived from
+<ul>
+<li>type class laws;</li>
+<li>library’s test suite;</li>
+<li>interfaces from Coq’s stdlib.</li>
+
+</ul></li>
+<li>challenge: partiality</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org0a7e3a3">
+<h2 id="org0a7e3a3">SSReflect</h2>
+<ul>
+<li>SSReflect = Small Scale Reflection</li>
+<li>a language and a methodology for writing Coq proofs</li>
+<li>Four Colour Theorem, Odd Order Theorem, Mathcomp library</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org5fb707f">
+<h2 id="org5fb707f">SSReflect/Mathcomp heavily exploits</h2>
+<ul>
+<li>Decidability and computation</li>
+<li>Special type of reflection/reification</li>
+<li>Notations</li>
+<li>Coercions</li>
+<li>Canonical Structures</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org5506c11">
+<h2 id="org5506c11">Decidability and computation</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Inductive</span> <span style="color: #bc6ec5; font-weight: bold;">le</span> : nat -&gt; nat -&gt; <span style="color: #ce537a; font-weight: bold;">Prop</span> :=
+| Le0 : <span style="color: #ce537a; font-weight: bold;">forall</span> <span style="color: #7590db;">n</span>, le 0 n
+| LeSS : <span style="color: #ce537a; font-weight: bold;">forall</span> {n m}, le n m -&gt; le (S n) (S m).
+
+<span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">four_le_five</span> : le 4 5 :=
+  LeSS (LeSS (LeSS (LeSS (Le0 1)))).
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgd8626cf">
+<h2 id="orgd8626cf">Decidability and computation</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Fixpoint</span> <span style="color: #bc6ec5; font-weight: bold;">leb</span> (<span style="color: #7590db;">n m</span> : nat) : bool :=
+  <span style="color: #ce537a; font-weight: bold;">match</span> n, m <span style="color: #ce537a; font-weight: bold;">with</span>
+  | O, _ =&gt; true
+  | _, O =&gt; false
+  | S n', S m' =&gt; le n' m'
+  <span style="color: #ce537a; font-weight: bold;">end</span>.
+
+<span style="color: #4f97d7; font-weight: bold;">Coercion</span> <span style="color: #7590db;">is_true b</span> := b = true.
+
+<span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">four_le_five</span> : leb 4 5 :=
+  eq_refl.
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org9edad24">
+<h2 id="org9edad24">Decidability and computation</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Fixpoint</span> <span style="color: #bc6ec5; font-weight: bold;">leb</span> (<span style="color: #7590db;">n m</span> : nat) : bool :=
+  <span style="color: #ce537a; font-weight: bold;">match</span> n, m <span style="color: #ce537a; font-weight: bold;">with</span>
+  | O, _ =&gt; true
+  | _, O =&gt; false
+  | S n', S m' =&gt; le n' m'
+  <span style="color: #ce537a; font-weight: bold;">end</span>.
+
+<span style="color: #4f97d7; font-weight: bold;">Coercion</span> <span style="color: #7590db;">is_true b</span> := b = true.
+
+<span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">four_le_five</span> : is_true (leb 4 5) :=
+  eq_refl.
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb5907d8">
+<h2 id="orgb5907d8">Large Scale Reflection</h2>
+<ul>
+<li>reflect a piece of language into a datatype</li>
+<li>process</li>
+<li>interpret back into language (reify)</li>
+<li>e.g. this is how the ring tactic works</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org8334b9b">
+<h2 id="org8334b9b">Small Scale Reflection</h2>
+<ul>
+<li>limited in scope</li>
+<li>based on an inductive reflection predicate</li>
+<li>needs special support from the proof language</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org91c2e4f">
+<h2 id="org91c2e4f">Small Scale Reflection</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Inductive</span> <span style="color: #bc6ec5; font-weight: bold;">reflect</span> (<span style="color: #7590db;">P</span> : <span style="color: #ce537a; font-weight: bold;">Prop</span>) : bool -&gt; <span style="color: #ce537a; font-weight: bold;">Set</span> :=
+  | ReflectT : P -&gt; reflect P true
+  | ReflectF : ~ P -&gt; reflect P false
+</pre>
+</div>
+<ul>
+<li>reasoning by excluded middle</li>
+<li>switch between le and leb</li>
+<li>a tool to deal with complex decidable properties using rewriting lemmas</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org686b5ec" data-background="images/small-scale-reflection.png" data-background-size="1000px" data-background-transition="slide">
+<h2 id="org686b5ec"></h2>
+</section>
+</section>
+<section>
+<section id="slide-org8bed660">
+<h2 id="org8bed660">SSReflect idiom: Trichotomy</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Variant</span> <span style="color: #bc6ec5; font-weight: bold;">cmp_nat</span> m n :
+  bool -&gt; bool -&gt; bool -&gt; bool -&gt; bool -&gt; bool -&gt; <span style="color: #ce537a; font-weight: bold;">Set</span> :=
+| CompareNatLt <span style="color: #ce537a; font-weight: bold;">of</span> m &lt; n :
+  cmp_nat m n true false true false false false
+| CompareNatGt <span style="color: #ce537a; font-weight: bold;">of</span> m &gt; n :
+  cmp_nat m n false true false true false false
+| CompareNatEq <span style="color: #ce537a; font-weight: bold;">of</span> m = n :
+  cmp_nat m n true true false false true true.
+
+<span style="color: #4f97d7; font-weight: bold;">Lemma</span> <span style="color: #bc6ec5; font-weight: bold;">ltngtP</span> m n :
+  cmp_nat m n (m &lt;= n) (n &lt;= m) (m &lt; n)
+              (n &lt; m) (n == m) (m == n).
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org1d62d1d">
+<h2 id="org1d62d1d">How ltngtP works: demo</h2>
+</section>
+</section>
+<section>
+<section id="slide-orga02eca4">
+<h2 id="orga02eca4">Coercions and Canonical Structures</h2>
+<ul>
+<li>Motivation: generic comparision operation</li>
+<li>x == y</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">T</span> : <span style="color: #ce537a; font-weight: bold;">Type</span>) -&gt; (<span style="color: #7590db;">x y</span> : T) -&gt; bool
+
+<span style="color: #4f97d7; font-weight: bold;">Notation</span> <span style="color: #2d9574;">"x == y"</span> := (eq_op _ x y).
+</pre>
+</div>
+<ul>
+<li><code>eq_op</code> is not possible to implement in general</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org6d7069c">
+<h2 id="org6d7069c">Solution: eqType structure</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Structure</span> <span style="color: #bc6ec5; font-weight: bold;">eqType</span> := Pack <span style="color: #2aa1ae; text-decoration: underline;">{</span>
+  <span style="color: #7590db;">sort</span> : <span style="color: #ce537a; font-weight: bold;">Type</span>;
+  eq_op : sort -&gt; sort -&gt; bool;
+  spec : <span style="color: #ce537a; font-weight: bold;">forall</span> <span style="color: #7590db;">x y</span>, eq_op x y = true &lt;-&gt; x = y
+}.
+
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org0320eed">
+<h2 id="org0320eed">Solution: eqType structure</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Structure</span> <span style="color: #bc6ec5; font-weight: bold;">eqType</span> := Pack <span style="color: #2aa1ae; text-decoration: underline;">{</span>
+  <span style="color: #7590db;">sort</span> : <span style="color: #ce537a; font-weight: bold;">Type</span>;
+  eq_op : sort -&gt; sort -&gt; bool;
+  spec : <span style="color: #ce537a; font-weight: bold;">forall</span> <span style="color: #7590db;">x y</span>, eq_op x y = true &lt;-&gt; x = y
+}.
+
+<span style="color: #4f97d7; font-weight: bold;">Coercion</span> <span style="color: #7590db;">sort</span> : eqType &gt;-&gt; Sortclass.
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgaee473a">
+<h2 id="orgaee473a">Solution: eqType structure</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Structure</span> <span style="color: #bc6ec5; font-weight: bold;">eqType</span> := Pack <span style="color: #2aa1ae; text-decoration: underline;">{</span>
+  <span style="color: #7590db;">sort</span> : <span style="color: #ce537a; font-weight: bold;">Type</span>;
+  eq_op : sort -&gt; sort -&gt; bool;
+  spec : <span style="color: #ce537a; font-weight: bold;">forall</span> <span style="color: #7590db;">x y</span>, eq_op x y = true &lt;-&gt; x = y
+}.
+
+<span style="color: #4f97d7; font-weight: bold;">Coercion</span> <span style="color: #7590db;">sort</span> : eqType &gt;-&gt; Sortclass.
+
+<span style="color: #4f97d7; font-weight: bold;">Lemma</span> <span style="color: #bc6ec5; font-weight: bold;">eq_sym</span> (<span style="color: #7590db;">T</span> : eqType) (<span style="color: #7590db;">x y</span> : T) : x == y -&gt; y == x.
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org8e29c53">
+<h2 id="org8e29c53">Solution: eqType structure</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Structure</span> <span style="color: #bc6ec5; font-weight: bold;">eqType</span> := Pack <span style="color: #2aa1ae; text-decoration: underline;">{</span>
+  <span style="color: #7590db;">sort</span> : <span style="color: #ce537a; font-weight: bold;">Type</span>;
+  eq_op : sort -&gt; sort -&gt; bool;
+  spec : <span style="color: #ce537a; font-weight: bold;">forall</span> <span style="color: #7590db;">x y</span>, eq_op x y = true &lt;-&gt; x = y
+}.
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org60513ad">
+<h2 id="org60513ad">Example</h2>
+<p>
+initially we have
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">1 == 2
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgcd5c9e6">
+<h2 id="orgcd5c9e6">Example</h2>
+<p>
+unfold notation
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op _ 1 2
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgbe97a6f">
+<h2 id="orgbe97a6f">Example</h2>
+<p>
+add types and names
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : sort <span style="color: #7590db;">?s</span>) (<span style="color: #7590db;">2</span> : sort <span style="color: #7590db;">?s</span>)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org6cc98eb">
+<h2 id="org6cc98eb">Example</h2>
+<p>
+add types and names
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : sort <span style="color: #7590db;">?s</span>) (<span style="color: #7590db;">2</span> : sort <span style="color: #7590db;">?s</span>)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org63ff482">
+<h2 id="org63ff482">Example</h2>
+<p>
+add types and names
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : sort <span style="color: #7590db;">?s</span>) (<span style="color: #7590db;">2</span> : sort <span style="color: #7590db;">?s</span>)
+eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : nat)     (<span style="color: #7590db;">2</span> : nat)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org57f3194">
+<h2 id="org57f3194">Example</h2>
+<p>
+so we need to be able to solve equations like
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">sort (<span style="color: #7590db;">?s</span> : eqType) = nat
+</pre>
+</div>
+<ul>
+<li>type inference is undecidable in this case</li>
+<li>so we need hints</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb049ec2">
+<h2 id="orgb049ec2">Canonical Structures to the rescue</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">Canonical nat_eqType := Pack nat eqn proof.
+<span style="color: #4f97d7; font-weight: bold;">Print</span> Canonical Projections.
+...
+nat &lt;- sort ( nat_eqType )
+...
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org16e31b9">
+<h2 id="org16e31b9">Example</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">
+
+eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : sort <span style="color: #7590db;">?s</span>) (<span style="color: #7590db;">2</span> : sort <span style="color: #7590db;">?s</span>)
+eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : nat)     (<span style="color: #7590db;">2</span> : nat)
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga7928a3">
+<h2 id="orga7928a3">Example</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">nat &lt;- sort ( nat_eqType )
+
+eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : sort <span style="color: #7590db;">?s</span>) (<span style="color: #7590db;">2</span> : sort <span style="color: #7590db;">?s</span>)
+                         |             |
+                         v             v
+eq_op (<span style="color: #7590db;">?s</span> : eqType) (<span style="color: #7590db;">1</span> : nat)     (<span style="color: #7590db;">2</span> : nat)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org267f177">
+<h2 id="org267f177">Example</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">nat &lt;- sort ( nat_eqType )
+
+eq_op (<span style="color: #7590db;">nat_eqType</span> : eqType)
+      (<span style="color: #7590db;">1</span> : sort nat_eqType)
+      (<span style="color: #7590db;">2</span> : sort nat_eqType)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org80297ab">
+<h2 id="org80297ab">Equality for product type</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">pair_eq</span> (<span style="color: #7590db;">A B</span> : eqType)
+                   (<span style="color: #7590db;">u v</span> : A * B) :=
+  (u.1 == v.1) &amp;&amp; (u.2 == v.2).
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org0d899a2">
+<h2 id="org0d899a2">Equality for product type</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">pair_eq</span> (<span style="color: #7590db;">A B</span> : eqType)
+                   (<span style="color: #7590db;">u v</span> : A * B) :=
+  (u.1 == v.1) &amp;&amp; (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (A * B) pair_eq proof.
+
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgc3806fe">
+<h2 id="orgc3806fe">Equality for product type</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">pair_eq</span> (<span style="color: #7590db;">A B</span> : eqType)
+                   (<span style="color: #7590db;">u v</span> : sort A * sort B) :=
+  (u.1 == v.1) &amp;&amp; (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (sort A * sort B) pair_eq proof.
+
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org7dd97ac">
+<h2 id="org7dd97ac">Equality for product type</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq"><span style="color: #4f97d7; font-weight: bold;">Definition</span> <span style="color: #bc6ec5; font-weight: bold;">pair_eq</span> (<span style="color: #7590db;">A B</span> : eqType)
+                   (<span style="color: #7590db;">u v</span> : sort A * sort B) :=
+  (u.1 == v.1) &amp;&amp; (u.2 == v.2).
+
+Canonical prod_eqType A B :=
+  Pack (sort A * sort B) pair_eq proof.
+
+<span style="color: #4f97d7; font-weight: bold;">Print</span> Canonical Projections.
+...
+prod &lt;- sort ( prod_eqType ) 
+...
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org1b0ac3a">
+<h2 id="org1b0ac3a">Example</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">Compute (1, true) == (1, true).
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org8c9b1dc">
+<h2 id="org8c9b1dc">Example</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">Compute (1, true) == (1, true).
+true
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgfff5ad9">
+<h2 id="orgfff5ad9">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">(1, true) == (1, true)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org63fe5ac">
+<h2 id="org63fe5ac">How does it work?</h2>
+<p>
+desugars into
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op _ (1, true) (1, true) 
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgcd840fc">
+<h2 id="orgcd840fc">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgdcf50fa">
+<h2 id="orgdcf50fa">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; nat * bool
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga3ad3fa">
+<h2 id="orga3ad3fa">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org880f646">
+<h2 id="org880f646">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+prod &lt;- sort ( prod_eqType ) 
+
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org9737a42">
+<h2 id="org9737a42">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+prod &lt;- sort ( prod_eqType ) 
+sort (prod_eqType <span style="color: #7590db;">?A</span> <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org7829c4e">
+<h2 id="org7829c4e">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+prod &lt;- sort ( prod_eqType ) 
+sort (prod_eqType <span style="color: #7590db;">?A</span> <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+(sort <span style="color: #7590db;">?A</span>) * (sort <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org0a2a3b6">
+<h2 id="org0a2a3b6">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+prod &lt;- sort ( prod_eqType ) 
+sort (prod_eqType <span style="color: #7590db;">?A</span> <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+prod (sort <span style="color: #7590db;">?A</span>) (sort <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf976012">
+<h2 id="orgf976012">How does it work?</h2>
+<div class="org-src-container">
+
+<pre  class="src src-coq">eq_op : (<span style="color: #7590db;">?T</span> : eqType) -&gt; (<span style="color: #7590db;">x y</span> : sort T) -&gt; bool
+eq_op   _                (1, true)
+                            ..
+                         nat * bool
+sort <span style="color: #7590db;">?T</span> &#8801; prod nat bool
+prod &lt;- sort ( prod_eqType ) 
+sort (prod_eqType <span style="color: #7590db;">?A</span> <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+prod (sort <span style="color: #7590db;">?A</span>) (sort <span style="color: #7590db;">?B</span>) &#8801; prod nat bool
+(sort <span style="color: #7590db;">?A</span>) = nat and (sort <span style="color: #7590db;">?B</span>) = bool
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org94032d7">
+<h2 id="org94032d7">Canonical Structures vs Typeclasses</h2>
+<ul>
+<li>Canonical Structures work at the unification level (predictable)</li>
+<li>Typeclasses mechanism uses <code>eauto</code>-like proof search</li>
+<li>Canonical structures are <span class="underline">not</span> tied to types, those can be keyed on terms!</li>
+<li>CS can be used to implement overloading, implicit program (and proof) construction</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgd108bc8">
+<h2 id="orgd108bc8">Keying on terms</h2>
+<p>
+Mathcomp's <code>bigop</code> module has the following:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-coq">Canonical addn_monoid := Law addnA add0n addn0.
+Canonical muln_monoid := Law mulnA mul1n muln1.
+Canonical maxn_monoid := Law maxnA max0n maxn0.
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org216d18a">
+<h2 id="org216d18a">Keying on terms: demo</h2>
+</section>
+</section>
+<section>
+<section id="slide-org9aa386a">
+<h2 id="org9aa386a">Further reading</h2>
+<ul>
+<li>SSReflect chapter of Coq Reference Manual</li>
+<li>Programs and Proofs - I. Sergey</li>
+<li>Mathemacical Components book - E. Tassi, A. Mahboubi</li>
+<li>Packaging Mathematical Structures - G. Gonthier et al.(2009)</li>
+<li>Canonical Structures for the Working Coq User - A. Mahboubi, E. Tassi(2013)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org9191fce">
+<h2 id="org9191fce">Further reading</h2>
+<ul>
+<li>Generic Proof Tools and Finite Group Theory - F. Garillot(2011)</li>
+<li>A Machine-Checked Proof of the Odd Order Theorem - G. Gonthier et al.(2013)</li>
+<li>How to Make Ad Hoc Proof Automation Less Ad Hoc - A. Nanevski et al.(2013)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org59afcae">
+<h2 id="org59afcae">Questions?</h2>
+</section>
+</section>
+<section>
+<section id="slide-orge6d14c7">
+<h2 id="orge6d14c7">Thank you!</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: './reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

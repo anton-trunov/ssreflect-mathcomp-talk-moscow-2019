@@ -1,0 +1,3 @@
+* SSReflect/Mathcomp talk
+  
+These are materials for my "SSReflect/Mathcomp" talk given on Apr. 4, 2019 at FProg meetup, Moscow.
