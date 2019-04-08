@@ -140,7 +140,7 @@ Just some keywords:
 - Proof checking = Type checking!
 - Proving = Programming
 * Proving _is_ programming
-- High confendence in your code
+- High confidence in your code
 - It is as strong as strong your specs are (trust!)
 - It can be extremely hard to come up with a spec (think of browsers)
 - IMHO: the best kind of programming
@@ -269,7 +269,7 @@ Lemma ltngtP m n :
 #+END_SRC
 * How ltngtP works: demo
 * Coercions and Canonical Structures
-- Motivation: generic comparision operation
+- Motivation: generic comparison operation
 - x == y
 #+BEGIN_SRC coq
   eq_op : (T : Type) -> (x y : T) -> bool
@@ -581,7 +581,7 @@ Canonical maxn_monoid := Law maxnA max0n maxn0.
 * Further reading
 - SSReflect chapter of Coq Reference Manual
 - Programs and Proofs - I. Sergey
-- Mathemacical Components book - E. Tassi, A. Mahboubi
+- Mathematical Components book - E. Tassi, A. Mahboubi
 - Packaging Mathematical Structures - G. Gonthier et al.(2009)
 - Canonical Structures for the Working Coq User - A. Mahboubi, E. Tassi(2013)
 * Further reading
